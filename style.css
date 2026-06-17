@@ -47,7 +47,7 @@ h1 {
 
 h2 {
     margin-bottom: 15px;
-    font-size: 1.2rem;
+    font-size: 1.8rem;
     font-weight: 600;
 }
 
@@ -116,7 +116,7 @@ input, select {
     border-radius: 8px;
     background: var(--panel2);
     color: white;
-    font-size: 17px;
+    font-size: 21px;
     width: 100%; 
 }
 
@@ -171,7 +171,7 @@ input[type="range"] {
     width: 130px !important; 
     height: 41px !important; 
     padding: 10px !important;
-    font-size: 17px !important;
+    font-size: 21px !important;
     text-align: center !important;
     border-radius: 8px !important;
     background: var(--panel2) !important;
@@ -227,27 +227,30 @@ button {
     flex-direction: row;   
     flex-wrap: nowrap;     
     align-items: center;   
-    gap: 6px;              
-    width: 100%;           
+    
+    /* 🎯 [수정] 억지로 양옆을 꽉 채우지 않고, 자식들 크기만큼만 차지하도록 변경 */
+    justify-content: center; /* 내부 버튼들을 화면 한가운데로 정렬 */
+    width: auto;             /* 100% 강제 해제 */
+    
+    gap: 10px;              
+    margin: 15px auto;       /* 위아래 여백을 주고, 가로상으로 패널 중앙에 안착 */
     box-sizing: border-box;
 }
 
-.tap-controls button, 
+/* ⚡ 인풋/셀렉트 기본 flex 규칙 분리 유지 */
 .tap-controls input,
 .tap-controls select {
-    flex: 1;               
     min-width: 0;          
     width: auto;           
     padding: 6px 4px;      
 }
 
 .bpm-step-btn, .tap-floating {
-    height: 70px;
+    height: 100px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: none;
-    border-radius: 18px;
     color: white;
     font-weight: bold;
     cursor: pointer;
@@ -256,21 +259,30 @@ button {
     margin: 0;
 }
 
+/* 🎯 숫자 버튼들 (-10, -1, +1, +10): 가로폭 반토막 고정 */
 .bpm-step-btn {
-    width: 70px;
+    width: 110px;           
     background: #374151;
-    font-size: 24px;
+    font-size: 40px;       
+    border-radius: 10px;   
+    flex-shrink: 0;        
 }
 
 .bpm-step-btn:hover {
     background: #4b5563;
 }
 
+/* 🎯 TAP 버튼: 무한정 길어지지 않도록 딱 알맞은 크기로 고정! */
 .tap-floating {
+    /* 🎯 [수정] flex: 3; 이 무조건 채우라는 명령어라 이걸 지우고, 고정 가로폭을 줍니다 */
+    width: 180px;          /* 과하게 길어지지 않고 딱 클릭하기 좋은 180픽셀로 제한 */
+    flex-shrink: 0;        /* 주변 요소 때문에 찌그러지지 않게 보호 */
+    
     background: royalblue;
-    padding: 0 35px;
-    font-size: 20px;
+    padding: 0 25px;
+    font-size: 40px;       
     letter-spacing: 1px;
+    border-radius: 18px;
     box-shadow: 0 0 12px rgba(65, 105, 225, 0.35);
 }
 
@@ -286,7 +298,6 @@ button {
 .bpm-step-btn:active, .tap-floating:active {
     transform: scale(.95);
 }
-
 /* =====================================
    BPM HUB
 ==================================== */
@@ -525,13 +536,13 @@ button {
 }
 
 .short-cut h3 {
-    font-size: 16px;
+    font-size: 23px;
     margin-bottom: 6px;
     color: var(--white);
 }
 
 .short-cut span {
-    font-size: 16px;
+    font-size: 22px;
     color: var(--gray);
 }
 
@@ -561,6 +572,7 @@ div.grid#grid-bottom > label {
     margin: 0 !important;
     padding: 0 !important;
     gap: 8px !important;
+    font-size: 24px !important;
 }
 
 div.grid#grid-bottom > label input[type="number"] {
@@ -569,7 +581,7 @@ div.grid#grid-bottom > label input[type="number"] {
     width: 100% !important;
     height: 41px !important; /* 상단 인풋창들과 높이 통일 */
     padding: 10px !important;
-    font-size: 17px !important;
+    font-size: 21px !important;
     text-align: center !important;
     border-radius: 8px !important;
     background: var(--panel2) !important;
@@ -601,7 +613,7 @@ div.grid#grid-bottom > label.checkbox input[type="checkbox"] {
    🎯 TRAINING INFO DISPLAY
 ===================================== */
 #trainingInfo {
-    font-size: 20px !important;
+    font-size: 30px !important;
     text-align: center !important;
     margin-bottom: 10px !important;
     min-height: 20px !important;
