@@ -44,9 +44,9 @@ function playVoice(beatNumber, time) {
     const voiceGain = audioCtx.createGain();
     
     source.buffer = voiceBuffers[beatNumber];
-    voiceGain.gain.setValueAtTime(1.0, time);
     
-    // 🎯 피치 변경 로직 삭제 (BPM에 상관없이 항상 원본 피치 1.0 유지)
+    // 🎯 사람 목소리 기본값도 1.0에서 2.0으로 2배 증폭!
+    voiceGain.gain.setValueAtTime(2.0, time); 
     
     source.connect(voiceGain);
     voiceGain.connect(masterGain);
@@ -303,7 +303,7 @@ function playClickAtTime(accent, isSubdivision, isForcedHumanSub, time) {
     let currentType = isForcedHumanSub ? "wood" : soundTypeInput.value;
 
     // -----------------------------------------------------------------
-    // 1. SHAKER
+    // 1. SHAKER (강력 부스팅 ⚡)
     // -----------------------------------------------------------------
     if (currentType === "shaker") {
         const bufferSize = audioCtx.sampleRate * 0.05; 
@@ -319,9 +319,11 @@ function playClickAtTime(accent, isSubdivision, isForcedHumanSub, time) {
         filter.frequency.setValueAtTime(accent ? 6000 : 7500, now); 
         
         const gain = audioCtx.createGain();
-        const volume = accent ? 0.6 : (isSubdivision ? 0.3 : 0.45); 
+        /* 🎯 [볼륨 증폭] 기존 0.6 / 0.3 / 0.45 세팅을 약 2배 이상 스케일업 */
+        const volume = accent ? 1.5 : (isSubdivision ? 0.7 : 1.1); 
         gain.gain.setValueAtTime(volume, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + (accent ? 0.045 : 0.035));
+        /* 🎯 [타격감 증가] 소리 지속 시간을 미세하게 늘려 귀에 확 꽂히게 교정 */
+        gain.gain.exponentialRampToValueAtTime(0.001, now + (accent ? 0.08 : 0.06));
         
         noise.connect(filter); 
         filter.connect(gain); 
@@ -329,27 +331,26 @@ function playClickAtTime(accent, isSubdivision, isForcedHumanSub, time) {
         
         noise.start(now);
         
-        // 🎯 [메모리 해제 안전장치] 소리가 끝나면 노드 연결을 끊어 메모리 누수 방지
-        const duration = accent ? 0.05 : 0.04;
+        const duration = accent ? 0.09 : 0.07;
         noise.stop(now + duration);
         setTimeout(() => {
-            noise.disconnect();
-            filter.disconnect();
-            gain.disconnect();
+            noise.disconnect(); filter.disconnect(); gain.disconnect();
         }, (now - audioCtx.currentTime + duration + 0.1) * 1000);
         return; 
     }
 
     // -----------------------------------------------------------------
-    // 2. SNARE
+    // 2. SNARE (강력 부스팅 ⚡)
     // -----------------------------------------------------------------
     if (currentType === "snare") {
         const osc = audioCtx.createOscillator(); 
         const oscGain = audioCtx.createGain();
         osc.type = "triangle"; 
         osc.frequency.setValueAtTime(accent ? 210 : 160, now); 
-        oscGain.gain.setValueAtTime(accent ? 0.6 : 0.4, now);
-        oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+        
+        /* 🎯 [볼륨 증폭] 트라이앵글 베이스 볼륨 상향 */
+        oscGain.gain.setValueAtTime(accent ? 1.3 : 0.9, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
         osc.connect(oscGain); 
         oscGain.connect(masterGain);
         
@@ -366,9 +367,10 @@ function playClickAtTime(accent, isSubdivision, isForcedHumanSub, time) {
         filter.frequency.setValueAtTime(1000, now); 
         
         const noiseGain = audioCtx.createGain(); 
-        const nVol = accent ? 0.45 : (isSubdivision ? 0.2 : 0.35);
+        /* 🎯 [볼륨 증폭] 노이즈 성분 음량 대폭 확장 */
+        const nVol = accent ? 1.2 : (isSubdivision ? 0.6 : 0.9);
         noiseGain.gain.setValueAtTime(nVol, now); 
-        noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
         
         noise.connect(filter); 
         filter.connect(noiseGain); 
@@ -376,19 +378,18 @@ function playClickAtTime(accent, isSubdivision, isForcedHumanSub, time) {
         
         osc.start(now); 
         noise.start(now); 
-        osc.stop(now + 0.15); 
-        noise.stop(now + 0.15); 
+        osc.stop(now + 0.2); 
+        noise.stop(now + 0.2); 
         
-        // 🎯 [메모리 해제 안전장치]
         setTimeout(() => {
             osc.disconnect(); oscGain.disconnect();
             noise.disconnect(); filter.disconnect(); noiseGain.disconnect();
-        }, (now - audioCtx.currentTime + 0.3) * 1000);
+        }, (now - audioCtx.currentTime + 0.4) * 1000);
         return;
     }
 
     // -----------------------------------------------------------------
-    // 3. COWBELL
+    // 3. COWBELL (강력 부스팅 ⚡)
     // -----------------------------------------------------------------
     if (currentType === "cowbell") {
         const baseHz = accent ? 580 : 510; 
@@ -401,26 +402,26 @@ function playClickAtTime(accent, isSubdivision, isForcedHumanSub, time) {
         osc2.type = "square"; osc2.frequency.setValueAtTime(baseHz * 1.48, now); 
         filter.type = "bandpass"; filter.frequency.setValueAtTime(baseHz * 1.55, now);
         
-        const volume = accent ? 0.5 : (isSubdivision ? 0.22 : 0.35);
+        /* 🎯 [볼륨 증폭] 0.5 수준에서 최대 1.4 수준으로 부스팅 */
+        const volume = accent ? 1.4 : (isSubdivision ? 0.65 : 1.0);
         gain.gain.setValueAtTime(volume, now); 
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
         
         osc1.connect(filter); osc2.connect(filter); 
         filter.connect(gain); gain.connect(masterGain);
         
         osc1.start(now); osc2.start(now); 
-        osc1.stop(now + 0.2); osc2.stop(now + 0.2); 
+        osc1.stop(now + 0.25); osc2.stop(now + 0.25); 
         
-        // 🎯 [메모리 해제 안전장치]
         setTimeout(() => {
             osc1.disconnect(); osc2.disconnect();
             filter.disconnect(); gain.disconnect();
-        }, (now - audioCtx.currentTime + 0.3) * 1000);
+        }, (now - audioCtx.currentTime + 0.4) * 1000);
         return;
     }
 
     // -----------------------------------------------------------------
-    // 4. CLAVES
+    // 4. CLAVES (강력 부스팅 ⚡)
     // -----------------------------------------------------------------
     if (currentType === "claves") {
         const osc = audioCtx.createOscillator(); 
@@ -432,26 +433,25 @@ function playClickAtTime(accent, isSubdivision, isForcedHumanSub, time) {
         osc.frequency.setValueAtTime(startHz, now); 
         osc.frequency.exponentialRampToValueAtTime(endHz, now + 0.012);
         
-        const volume = accent ? 0.8 : (isSubdivision ? 0.3 : 0.55);
+        /* 🎯 [볼륨 증폭] 클라베스 고유 톤 타격감 보강 */
+        const volume = accent ? 1.8 : (isSubdivision ? 0.7 : 1.2);
         gain.gain.setValueAtTime(volume, now); 
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
         
         osc.connect(gain); 
         gain.connect(masterGain);
         
         osc.start(now); 
-        osc.stop(now + 0.07); 
+        osc.stop(now + 0.12); 
         
-        // 🎯 [메모리 해제 안전장치]
         setTimeout(() => {
-            osc.disconnect();
-            gain.disconnect();
-        }, (now - audioCtx.currentTime + 0.15) * 1000);
+            osc.disconnect(); gain.disconnect();
+        }, (now - audioCtx.currentTime + 0.2) * 1000);
         return;
     }
 
     // -----------------------------------------------------------------
-    // 5. 기본 신호음 기반 사운드들 (Click, Wood, Beep)
+    // 5. CLICK, WOOD, BEEP (기본 신호음 계열 울트라 증폭 ⚡)
     // -----------------------------------------------------------------
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -464,22 +464,25 @@ function playClickAtTime(accent, isSubdivision, isForcedHumanSub, time) {
         osc.type = "sine"; osc.frequency.setValueAtTime(accent ? 1000 : 500, now);
     }
     
-    const defaultVolume = accent ? 1.0 : 0.65;
+    /* 🎯 [볼륨 증폭] 기존 한계치 1.0의 벽을 깨고 2.2배 이상 하드웨어 출력 부스팅 */
+    const defaultVolume = accent ? 2.2 : (isSubdivision ? 0.9 : 1.5);
     gain.gain.setValueAtTime(defaultVolume, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+    
+    /* 🎯 [지속 시간] 감쇠 시간을 기존 0.05에서 늘려 소리의 밀도를 꽉 채움 */
+    gain.gain.exponentialRampToValueAtTime(0.001, now + (accent ? 0.09 : 0.07));
     
     osc.connect(gain); 
     gain.connect(masterGain);
     
     osc.start(now); 
-    osc.stop(now + 0.05);
+    osc.stop(now + (accent ? 0.09 : 0.07));
 
-    // 🎯 [메모리 해제 안전장치] 0.05초 재생이 완전히 끝난 후 노드 연결을 끊어 브라우저가 즉시 메모리를 청소하게 만듦
     setTimeout(() => {
         osc.disconnect();
         gain.disconnect();
-    }, (now - audioCtx.currentTime + 0.1) * 1000);
+    }, (now - audioCtx.currentTime + 0.2) * 1000);
 }
+
 // =====================================
 // CONTROL PANEL ENGINES
 // =====================================

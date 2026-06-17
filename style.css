@@ -28,7 +28,7 @@ body {
     color: var(--text);
     font-family: "Segoe UI", sans-serif;
     padding: 20px;
-    zoom: 1.0; /* 데스크톱 화면축소느낌 유지 */
+    zoom: 1.2; /* 데스크톱 화면축소느낌 유지 */
     
     /* 🎯 스마트폰 가로폭 이하로 줄어들었을 때 레이아웃 붕괴 방지용 고정 폭 */
     min-width: 1200px; 
