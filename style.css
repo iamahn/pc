@@ -28,14 +28,14 @@ body {
     color: var(--text);
     font-family: "Segoe UI", sans-serif;
     padding: 20px;
-    zoom: 0.7; /* 데스크톱 화면축소느낌 유지 */
+    zoom: 0.9; /* 데스크톱 화면축소느낌 유지 */
     
     /* 🎯 스마트폰 가로폭 이하로 줄어들었을 때 레이아웃 붕괴 방지용 고정 폭 */
     min-width: 1200px; 
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1000px;
     margin: auto;
 }
 
@@ -143,8 +143,8 @@ input[type="range"] {
 }
 
 .checkbox input {
-    width: 18px;
-    height: 18px;
+    width: 35px;
+    height: 35px;
 }
 
 /* ⚡ 타이머 그룹 */
@@ -159,8 +159,8 @@ input[type="range"] {
 
 /* 🎯 타이머 체크박스 */
 .timer-group input[type="checkbox"] {
-    width: 18px !important;
-    height: 18px !important;
+    width: 35px !important;
+    height: 35px !important;
     margin: 0 !important;
     margin-right: 4px !important; 
     flex-shrink: 0; 
@@ -182,7 +182,7 @@ input[type="range"] {
 .timer-display-inline {
     color: var(--green);
     font-weight: bold;
-    font-size: 1.8rem;  
+    font-size: 3rem;  
     white-space: nowrap;
     min-width: 25px;
     text-align: center;
@@ -600,8 +600,8 @@ div.grid#grid-bottom > label.checkbox {
 
 div.grid#grid-bottom > label.checkbox input[type="checkbox"] {
     margin: 0 !important;
-    width: 18px !important;
-    height: 18px !important;
+    width: 35px !important;
+    height: 35px !important;
 }
 
 .panel:has(#grid-bottom) > h2 {
