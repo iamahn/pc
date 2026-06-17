@@ -124,10 +124,88 @@ input:focus, select:focus {
     outline: 2px solid var(--blue);
 }
 
+/* 🎯 [수정] 기존 input[type="range"] 코드를 볼륨 커스텀과 완벽하게 통합 */
 input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
     padding: 0;
-    height: 37px;
+    height: 37px;             /* 기존 높이 유지 */
     background: transparent;
+    cursor: pointer;
+}
+
+input[type="range"]:focus {
+    outline: none;
+}
+
+/* -----------------------------------------------------------------
+   🔊 VOLUME SLIDER RE-DESIGN (크롬, 사파리, 엣지, 웨일 등)
+----------------------------------------------------------------- */
+/* ⚡ 트랙: 지나가는 길을 3倍 이상 두껍게 (14px) */
+input[type="range"]#volume::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 20px;             
+    background: var(--panel2);
+    border-radius: 99px;      
+    transition: background 0.15s ease;
+}
+
+/* ⚡ 톰: 움직이는 버튼 크기를 트랙 두께에 맞춰 조절 (24px) */
+/* ⚡ 1. 트랙: 지나가는 길 두께 키우기 */
+input[type="range"]#volume::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 20px;             /* 🎯 [변경] 14px -> 20px로 대폭 키워 볼륨바를 더 두껍게 만듭니다! */
+    background: var(--panel2);
+    border-radius: 99px;      
+    transition: background 0.15s ease;
+}
+
+/* ⚡ 2. 톰: 움직이는 노브 색상 및 수직 정렬 변경 */
+input[type="range"]#volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;              /* 바가 두꺼워졌으니 노브 크기도 살짝 확대 (24px -> 26px) */
+    height: 26px;             
+    border-radius: 50%;       
+    
+    background: royalblue;    /* 🎯 [변경] var(--green) -> royalblue (로열블루 컬러 적용!) */
+    
+    /* 🎯 [변경] 중요: 바가 20px로 두꺼워졌으므로 중앙 정렬 마진 공식 재계산 */
+    /* 계산 공식: (트랙높이 20 / 2) - (노브높이 26 / 2) = 10 - 13 = -3px */
+    margin-top: -3px;         /* 🎯 기존 -5px에서 -3px로 변경해야 정중앙에 딱 맞습니다. */
+    
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); 
+    transition: transform 0.1s ease;
+}
+
+/* ⚡ 마우스 올렸을 때 반응 효과 */
+input[type="range"]#volume:hover::-webkit-slider-runnable-track {
+    background: #4b5563;       
+}
+input[type="range"]#volume:hover::-webkit-slider-thumb {
+    transform: scale(1.1);    
+}
+
+/* -----------------------------------------------------------------
+   🔊 VOLUME SLIDER RE-DESIGN (파이어폭스 브라우저용)
+----------------------------------------------------------------- */
+input[type="range"]#volume::-moz-range-track {
+    width: 100%;
+    height: 20px;             /* 🎯 [변경] 20px로 일치 */
+    background: var(--panel2);
+    border-radius: 99px;
+}
+input[type="range"]#volume::-moz-range-thumb {
+    width: 26px;              /* 🎯 [변경] 26px로 일치 */
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: royalblue;    /* 🎯 [변경] royalblue로 일치 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s ease;
+}
+input[type="range"]#volume:hover::-moz-range-thumb {
+    transform: scale(1.1);
 }
 
 /* =====================================
