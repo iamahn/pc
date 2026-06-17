@@ -1,0 +1,617 @@
+@charset "UTF-8";
+
+/* =====================================
+   GLOBAL
+===================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #111827;
+    --panel: #1f2937;
+    --panel2: #374151;
+    --text: #f9fafb;
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --white: #ffffff;
+    --gray: #808080;
+    --border: #4b5563;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
+    padding: 20px;
+    zoom: 0.7; /* 데스크톱 화면축소느낌 유지 */
+    
+    /* 🎯 [추가] 화면이 스마트폰 가로폭 이하로 줄어들었을 때 레이아웃이 깨지거나 뭉개지는 것을 원천 차단 */
+    min-width: 1200px; 
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2rem;
+}
+
+h2 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* =====================================
+   PANELS
+===================================== */
+.panel {
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.metronome-display-panel {
+    background: #1f2937; 
+    border-radius: 16px;
+    padding: 30px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* =====================================
+   GRID (통일감 교정 부구역 🛠️)
+===================================== */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.metronome-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px 25px;
+    align-items: flex-end;
+    width: 60%;
+    max-width: 1000px;
+    margin: 10px auto 0 auto;
+}
+
+/* ⚡ 입력창들의 강제 폭 확장을 제한하여 일렬 정렬 크기 통일 */
+.metronome-grid > label,
+.metronome-grid > .timer-group {
+    width: 100%;
+    min-width: 0;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* =====================================
+   INPUTS
+===================================== */
+input, select {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: var(--panel2);
+    color: white;
+    font-size: 17px;
+    width: 100%; /* 기본적으로 부모 박스 크기에 꽉 차게 고정 */
+}
+
+input:focus, select:focus {
+    outline: 2px solid var(--blue);
+}
+
+input[type="range"] {
+    padding: 0;
+    height: 37px;
+    background: transparent;
+}
+
+/* =====================================
+   CHECKBOX & TIMER GROUP (요소 간 여백 넓힘 완료 ✨)
+===================================== */
+.checkbox {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 10px;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.checkbox input {
+    width: 18px;
+    height: 18px;
+}
+
+/* ⚡ 타이머 그룹 */
+.timer-group {
+    display: flex !important;
+    flex-direction: row !important; 
+    align-items: center !important; 
+    width: 100%;
+    
+    /* 🎯 [수정] 체크박스와 숫자창 사이의 여백을 18px로 시원하게 벌립니다 */
+    gap: 18px !important; 
+    height: 41px; 
+}
+
+/* 🎯 타이머 체크박스 */
+.timer-group input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    
+    /* 🎯 [추가] 이중 안전장치로 오른쪽 여백을 한 번 더 밀어줍니다 */
+    margin-right: 4px !important; 
+    flex-shrink: 0; 
+}
+
+/* 🎯 타이머 숫자 입력 박스 스타일 */
+.timer-group input[type="number"] {
+    width: 130px !important; 
+    height: 41px !important; 
+    padding: 10px !important;
+    font-size: 17px !important;
+    text-align: center !important;
+    border-radius: 8px !important;
+    background: var(--panel2) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.timer-display-inline {
+    color: var(--green);
+    font-weight: bold;
+    font-size: 1.8rem;  
+    white-space: nowrap;
+    min-width: 25px;
+    text-align: center;
+}
+
+.metronome-grid > * {
+    min-width: 0;
+}
+/* =====================================
+   BUTTONS
+===================================== */
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    cursor: pointer;
+    color: white;
+    font-weight: 600;
+    transition: .15s;
+}
+
+.start-btn { background: #16a34a; }
+.stop-btn { background: #dc2626; }
+
+/* =====================================
+   TAP CONTROLS
+===================================== */
+/* 🎯 1. 터치 확대 방지 (기존과 동일) */
+#tapBtn, .bpm-btn, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 🎯 2. 무조건 쪼개지지 않고 한 줄로 고정 (Flex-nowrap) */
+.tap-controls {
+    display: flex;
+    flex-direction: row;   /* 무조건 가로로 나열 */
+    flex-wrap: nowrap;     /* 어떤 일이 있어도 절대로 다음 줄로 떨어지지 않음 */
+    align-items: center;   /* 세로 정렬 중앙 */
+    gap: 6px;              /* 요소 사이의 간격을 좁혀서 컴팩트하게 배치 */
+    width: 100%;           /* 부모 가로 폭에 100% 맞춤 */
+    box-sizing: border-box;
+}
+
+/* 🎯 3. 내부 요소들이 화면을 나누어 가지며 절대 넘치지 않게 처리 */
+.tap-controls button, 
+.tap-controls input,
+.tap-controls select {
+    flex: 1;               /* 남은 공간을 균등하게 나누어 가짐 */
+    min-width: 0;          /* 매우 중요: 아이폰에서 글자 길어질 때 박스가 터지는 현상 원천 차단 */
+    width: auto;           /* 고정 너비 해제 */
+    padding: 6px 4px;      /* 아이폰 내부 패딩을 살짝 줄여서 좁은 화면에서도 넉넉하게 안착 */
+}
+
+.bpm-step-btn, .tap-floating {
+    height: 70px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 18px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,.3);
+    transition: 0.15s ease;
+    margin: 0;
+}
+
+.bpm-step-btn {
+    width: 70px;
+    background: #374151;
+    font-size: 24px;
+}
+
+.bpm-step-btn:hover {
+    background: #4b5563;
+}
+
+.tap-floating {
+    background: royalblue;
+    padding: 0 35px;
+    font-size: 20px;
+    letter-spacing: 1px;
+    box-shadow: 0 0 12px rgba(65, 105, 225, 0.35);
+}
+
+.tap-floating:hover {
+    background: #3b52d9;
+    box-shadow: 0 0 18px rgba(65, 105, 225, 0.6);
+}
+
+.bpm-step-btn:hover, .tap-floating:hover {
+    transform: translateY(-2px);
+}
+
+.bpm-step-btn:active, .tap-floating:active {
+    transform: scale(.95);
+}
+
+/* =====================================
+   BPM HUB
+==================================== */
+#hubContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 50px 0; 
+}
+
+#bpmHub {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    border: 4px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    background: var(--panel2); 
+}
+
+#bpmHub::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px dashed rgba(255,255,255,0.2);
+    animation: none;
+    opacity: 0.25;
+}
+
+#bpmHub.pulse {
+    animation: hubPulse 0.2s ease-out;
+}
+
+#bpmValue {
+    font-size: 6.5rem;
+    font-weight: bold;
+    color: var(--text);
+    z-index: 2;
+}
+
+#bpmHub.running {
+    border-color: var(--red);
+    box-shadow: none;
+}
+
+@keyframes hubPulse {
+    0% { box-shadow: 0 0 0 rgba(239,68,68,0); }
+    40% {
+        box-shadow:
+            0 0 15px #ff3b3b,
+            0 0 35px #ff3b3b,
+            0 0 60px rgba(255,59,59,0.7);
+    }
+    100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
+}
+
+/* =====================================
+   VISUALIZER
+===================================== */
+#visualizer-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+#visualizer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    max-width: 1200px;         
+    margin: 0 auto;
+}
+
+#visualizer:has([data-sub="6"]),
+#visualizer:has([data-sub="7"]),
+#visualizer:has([data-sub="8"]) {
+    gap: 6px;
+}
+
+/* =====================================
+   MEASURE COUNTER IN VISUALIZER
+===================================== */
+.measure-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px; 
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.measure-counter {
+    min-width: 65px;
+    height: 80px; 
+    background: var(--panel2); 
+    border: 2px solid var(--white); 
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem; 
+    font-weight: bold;
+    color: var(--text);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+/* =====================================
+   BEAT BOX & DOTS
+===================================== */
+.beat-box {
+    min-width: 120px;
+    min-height: 80px;
+    width: 120px;   
+    height: 80px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    transition: 0.1s ease;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 10px;
+}
+
+.beat-box[data-sub="1"],
+.beat-box[data-sub="2"],
+.beat-box[data-sub="3"],
+.beat-box[data-sub="4"],
+.beat-box[data-sub="5"] {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.beat-box[data-sub="2"],
+.beat-box[data-sub="3"] { justify-content: space-around; }
+.beat-box[data-sub="4"],
+.beat-box[data-sub="5"] { justify-content: space-between; }
+
+.beat-box[data-sub="6"] {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 4px 0;
+    justify-items: center;
+    align-items: center;
+    padding: 10px 8px;
+}
+
+.beat-box[data-sub="7"] {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr); 
+    grid-template-rows: repeat(2, 1fr);
+    gap: 6px 0;
+    padding: 10px 4px;
+}
+
+.beat-box[data-sub="7"] .dot:nth-child(1) { grid-column: span 3; grid-row: 1; justify-self: center; }
+.beat-box[data-sub="7"] .dot:nth-child(2) { grid-column: span 3; grid-row: 1; justify-self: center; }
+.beat-box[data-sub="7"] .dot:nth-child(3) { grid-column: span 3; grid-row: 1; justify-self: center; }
+.beat-box[data-sub="7"] .dot:nth-child(4) { grid-column: span 3; grid-row: 1; justify-self: center; }
+.beat-box[data-sub="7"] .dot:nth-child(5) { grid-column: span 4; grid-row: 2; justify-self: center; }
+.beat-box[data-sub="7"] .dot:nth-child(6) { grid-column: span 4; grid-row: 2; justify-self: center; }
+.beat-box[data-sub="7"] .dot:nth-child(7) { grid-column: span 4; grid-row: 2; justify-self: center; }
+
+.beat-box[data-sub="8"] {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 4px 0;
+    justify-items: center;
+    align-items: center;
+    padding: 10px 4px;
+}
+
+.beat-box.current-beat {
+    border-color: var(--red);
+    box-shadow: 0 0 12px var(--red);
+    transform: scale(1.03);
+}
+
+.dot {
+    border-radius: 50%;
+    background: var(--green);
+    transition: background .08s, transform .08s;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0; 
+}
+
+.beat-box[data-sub="1"] .dot,
+.beat-box[data-sub="2"] .dot,
+.beat-box[data-sub="3"] .dot { width: 18px; height: 18px; }
+.beat-box[data-sub="4"] .dot { width: 15px; height: 15px; }
+.beat-box[data-sub="5"] .dot { width: 13px; height: 13px; }
+.beat-box[data-sub="6"] .dot { width: 15px; height: 15px; }
+.beat-box[data-sub="7"] .dot { width: 15px; height: 15px; }
+.beat-box[data-sub="8"] .dot { width: 13px; height: 13px; }
+
+.dot.done { background: var(--gray); }
+.dot.active { background: var(--red); transform: none; }
+.dot.accent {
+    box-shadow: 0 0 10px var(--red), 0 0 20px var(--red), 0 0 35px rgba(239,68,68,0.6);
+}
+.dot.pulse { animation: dotPulse 0.25s ease-out; }
+
+@keyframes dotPulse {
+    0% { box-shadow: 0 0 0 rgba(239,68,68,0); }
+    50% { box-shadow: 0 0 10px #ff3b3b, 0 0 25px #ff3b3b, 0 0 40px rgba(255,59,59,0.6); }
+    100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
+}
+
+/* =====================================
+   SHORT-CUT & GENERAL UTILITY
+===================================== */
+.short-cut {
+    background: var(--panel);
+    padding: 16px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.short-cut h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+    color: var(--white);
+}
+
+.short-cut span {
+    font-size: 16px;
+    color: var(--gray);
+}
+
+/* =====================================
+   🎯 TRAINING GRID RE-DESIGN (중앙 정렬 유지)
+===================================== */
+div.grid#grid-bottom {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    grid-template-columns: none !important;
+    gap: 10px 16px !important;
+    align-items: center !important;
+    justify-content: center !important; 
+    width: 100% !important;
+}
+
+div.grid#grid-bottom > label {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    white-space: nowrap !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 6px !important;
+    font-size: 19px !important;
+}
+
+div.grid#grid-bottom > label input[type="number"] {
+    margin: 0 0 0 4px !important;
+    width: 85px !important;
+    height: 34px !important;
+    padding: 4px 8px !important;
+    font-size: 17px !important;
+    display: inline-block !important;
+}
+
+div.grid#grid-bottom > label.checkbox {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    margin-right: 8px !important;
+    height: auto !important;
+}
+
+div.grid#grid-bottom > label.checkbox input[type="checkbox"] {
+    margin: 0 !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.panel:has(#grid-bottom) > h2 {
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* =====================================
+   🎯 TRAINING INFO DISPLAY
+===================================== */
+#trainingInfo {
+    font-size: 20px !important;
+    text-align: center !important;
+    margin-bottom: 10px !important;
+    min-height: 20px !important;
+    color: royalblue !important;
+}
+
+
+   
+/* =====================================
+   🎯 버그 방지 최강 안전장치 (가장 아래 배치)
+===================================== */
+/* 자바스크립트가 hidden 속성을 부여한 드롭다운 option들을 모바일 브라우저 고집에 상관없이 무조건 숨김 강제 */
+select option[hidden],
+#subdivision option[hidden] {
+    display: none !important;
+}

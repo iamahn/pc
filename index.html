@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+    <title>Metronome</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>METRONOME</h1>
+
+        <div class="panel">
+            <div class="metronome-grid">
+                
+                <input type="number" id="bpm" value="120" min="20" max="400" hidden>
+                
+                <label>
+                    <h2>Beats</h2>
+                    <select id="beats">
+                        <option value="4/4" selected>4/4</option>
+                        <option value="2/4">2/4</option>
+                        <option value="3/4">3/4</option>
+                        <option value="2/2">2/2</option>
+                        <option value="6/8">6/8</option>
+                    </select>
+                </label>
+
+                <label>
+                    <h2>Subdivision</h2>
+                    <select id="subdivision">
+                        <option value="1" class="sub-common" selected>Quarter Note</option>
+                        <option value="2" class="sub-common">8th Note (2-Div)</option>
+                        <option value="3" class="sub-common">Triplet (3-Div)</option>
+                        <option value="4" class="sub-common">16th Note (4-Div)</option>
+                        <option value="5" class="sub-common">Quintuplet (5-Div)</option>
+                        <option value="6" class="sub-common">Sextuplet (6-Div)</option>
+                        <option value="7" class="sub-common">Septuplet (7-Div)</option>
+                        <option value="8" class="sub-common">32nd Note (8-Div)</option>
+
+                        <option value="1" class="sub-22" style="display:none;" hidden>Half Note</option>
+                        <option value="2" class="sub-22" style="display:none;" hidden>Quarter Note</option>
+                        <option value="4" class="sub-22" style="display:none;" hidden>8th Note</option>
+                        <option value="5" class="sub-22" style="display:none;" hidden>Quintuplet</option>
+                        <option value="6" class="sub-22" style="display:none;" hidden>Sextuplet</option>
+                        <option value="7" class="sub-22" style="display:none;" hidden>Septuplet</option>
+                        <option value="8" class="sub-22" style="display:none;" hidden>16th Note</option>
+
+                        <option value="1" class="sub-68" style="display:none;" hidden>8th Note</option>
+                        <option value="1.5" class="sub-68" style="display:none;" hidden>Dotted 8th Note</option>
+                        <option value="2" class="sub-68" style="display:none;" hidden>16th Note (2-Div)</option>
+                        <option value="3" class="sub-68" style="display:none;" hidden>Sextuplet (6-Div)</option>
+                        <option value="3.5" class="sub-68" style="display:none;" hidden>Septuplet (7-Div)</option>
+                        <option value="4" class="sub-68" style="display:none;" hidden>32nd Note (4-Div)</option>
+                    </select>
+                </label>
+
+                <label>
+                    <h2>Measure</h2>
+                    <input type="number" id="measure" value="4" min="1">
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" id="accent" checked>
+                    <h2>Accent</h2>
+                </label>
+
+                <label>
+                    <h2>Sound</h2>
+                    <select id="soundType">
+                        <option value="wood" selected>Wood</option>
+                        <option value="click">Click</option>
+                        <option value="beep">Beep</option>
+                        <option value="shaker">Shaker</option>
+                        <option value="snare">Snare</option>
+                        <option value="cowbell">Cowbell</option>
+                        <option value="claves">Claves</option>
+                        <option value="human">Human</option>
+                    </select>
+                </label>
+
+                <label>
+                    <h2>Volume</h2>
+                    <input type="range" id="volume" min="0" max="1" step="0.05" value="0.5">
+                </label>
+                
+                <label>
+                    <h2>Timer (min.)</h2>
+                    <div class="timer-group">
+                        <input type="checkbox" id="timerEnable">
+                        <input type="number" id="timerMinutes" value="5" min="1">
+                    </div>  
+                </label>
+                
+                <label>
+                    <h2>Remaining Time</h2>
+                    <div id="timerDisplay" class="timer-display-inline">∞</div>
+                </label>
+            </div>
+        </div>
+
+        <div class="metronome-display-panel">
+            <div class="tap-controls">
+                <button class="bpm-step-btn" id="bpmMinus10Btn">-10</button>
+                <button class="bpm-step-btn" id="bpmMinus5Btn">-5</button>
+                <button class="bpm-step-btn" id="bpmDownBtn">-1</button>
+                <button class="tap-floating" id="tapBtn">TAP</button>
+                <button class="bpm-step-btn" id="bpmUpBtn">+1</button>
+                <button class="bpm-step-btn" id="bpmPlus5Btn">+5</button>
+                <button class="bpm-step-btn" id="bpmPlus10Btn">+10</button>
+            </div>
+            
+            <div id="hubContainer">
+                <div id="bpmHub">
+                    <span id="bpmValue">120</span>
+                </div>
+            </div>
+
+            <div id="visualizer-wrapper">
+                <div id="visualizer"></div>
+            </div>
+        </div>
+        
+        <div id="trainingInfo">&nbsp;</div>
+
+        <div class="panel">
+            <h2>Training Mode</h2>
+            <div class="grid" id="grid-bottom">
+                <label class="checkbox">
+                    <input type="checkbox" id="trainingMode">
+                    <span>Enable Training</span>
+                </label>
+                <label>Start BPM: <input type="number" id="startBpm" value="120" min="20" max="400"></label>
+                <label>Target BPM: <input type="number" id="targetBpm" value="160" min="20" max="400"></label>
+                <label>Step BPM: <input type="number" id="stepBpm" value="5" min="1" max="50"></label>
+                <label>Bars/Step: <input type="number" id="barsPerStep" value="4" min="1"></label>
+            </div>
+        </div>
+
+        <div class="short-cut">
+           <h3>Short-cut</h3>
+           <span>play/stop: enter key, TAP: space key, -1: &#8592;, +1: &#8594;, +10: &#8593; -10: &#8595;</span>             
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
