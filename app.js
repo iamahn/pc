@@ -10,15 +10,6 @@ masterGain.connect(audioCtx.destination);
 // COUNTING VOICE
 // =====================================
 const voiceUrls = {
-	1: 'https://iamahn.github.io/beat/counting_voice/(female)01.wav', 
-	2: 'https://iamahn.github.io/beat/counting_voice/(female)02.wav',
-	3: 'https://iamahn.github.io/beat/counting_voice/(female)03.wav',
-	4: 'https://iamahn.github.io/beat/counting_voice/(female)04.wav',
-	5: 'https://iamahn.github.io/beat/counting_voice/(female)05.wav',
-	6: 'https://iamahn.github.io/beat/counting_voice/(female)06.wav',
-	7: 'https://iamahn.github.io/beat/counting_voice/(female)07.wav',
-	8: 'https://iamahn.github.io/beat/counting_voice/(female)08.wav',
-	9: 'https://iamahn.github.io/beat/counting_voice/(female)09.wav'
 };
 let voiceBuffers = {};
 let currentVoiceSource = null;
@@ -168,14 +159,24 @@ function createVisualizer() {
     const subdivision = Math.ceil(parseFloat(subdivisionInput.value) || 1);
     totalSteps = beats * subdivision;
 
-    const measureRow = document.createElement('div');
-    measureRow.className = 'measure-row current-measure';
+    // 1. 전체 너비를 동화시킬 메인 컨테이너 생성
+    const measureMatrix = document.createElement('div');
+    measureMatrix.className = 'measure-matrix';
+
+    // 2. 상단 카운터 전용 가로 행 생성
+    const counterRow = document.createElement('div');
+    counterRow.className = 'measure-counter-row';
 
     const counterDiv = document.createElement('div');
     counterDiv.className = 'measure-counter';
     counterDiv.id = 'liveMeasureCounter';
     counterDiv.innerText = "1"; 
-    measureRow.appendChild(counterDiv);
+    
+    counterRow.appendChild(counterDiv);
+
+    // 3. 하단 비트 박스 전용 가로 행 생성
+    const boxesRow = document.createElement('div');
+    boxesRow.className = 'measure-row current-measure';
 
     for (let b = 0; b < beats; b++) {
         const box = document.createElement("div");
@@ -187,9 +188,15 @@ function createVisualizer() {
             dot.className = "dot";
             box.appendChild(dot);
         }
-        measureRow.appendChild(box);
+        boxesRow.appendChild(box);
     }
-    visualizer.appendChild(measureRow);
+
+    // 4. 메인 컨테이너에 상단과 하단을 순서대로 결합
+    measureMatrix.appendChild(counterRow);
+    measureMatrix.appendChild(boxesRow);
+    
+    // 5. 최종 시각화 wrapper에 주입
+    visualizer.appendChild(measureMatrix);
     
     if (currentStep >= totalSteps) currentStep = 0;
 }

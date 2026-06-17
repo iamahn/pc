@@ -469,29 +469,64 @@ button {
 /* =====================================
    MEASURE COUNTER IN VISUALIZER
 ===================================== */
-.measure-row {
+/* JS에서 새로 정의한 메인 매트릭스 컨테이너 */
+.measure-matrix {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 25px; /* 🎯 박스들이 커진 만큼 사이 간격도 살짝 넓혀 균형 조절 */
-    width: 100%;
-    margin-bottom: 15px;
+    flex-direction: column;   /* 위아래 배치 */
+    width: max-content;       /* [핵심] 하단 비트박스들의 총합 너비만큼만 늘어남 */
+    margin: 0 auto;           /* 패널 내에서 가로 중앙 정렬 */
+    gap: 12px;                /* 카운터 바와 비트박스 사이의 수직 여백 */
 }
 
+/* 상단 카운터가 위치하는 독립된 행 */
+.measure-counter-row {
+    width: 100%;              /* 하단 비트박스 총 너비(100%)를 그대로 상속 */
+    display: flex;
+}
+
+/* 상단으로 이동하여 길쭉해진 마디 숫자 바 */
 .measure-counter {
-    min-width: 90px;      /* 🎯 가로 폭 약 1.4배 확장 (65px -> 90px) */
-    height: 100px;        /* 🎯 높이 정확히 1.25배 확장 (80px -> 100px) */
+    width: 100%;              /* 부모 너비를 꽉 채워 좌우로 길쭉하게 확장 */
+    height: 70px;             /* 상단 바로 변했으므로 세로 높이는 기존 100px에서 55px로 슬림하게 조정 */
     background: var(--panel2); 
-    border: 3px solid var(--white); /* 테두리 두께도 살짝 보강 */
+    border: 3px solid var(--white); 
     border-radius: 14px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;      /* 🎯 커진 박스에 맞춰 숫자 폰트 크기 확대 (2.4rem -> 3rem) */
+    font-size: 2.8rem;        /* 박스 비율에 맞게 크기 최적화 */
     font-weight: bold;
     color: var(--text);
-    box-shadow: 0 0 12px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* 기존 비트박스 행 스타일 교정 */
+.measure-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; 
+    width: 100%;
+    margin-bottom: 0;         /* 부모 격자 gap이 대체하므로 마진 제거 */
+    flex-wrap: wrap;
+}
+
+/* =====================================
+   6박자(박스 6개)일 때만 정확하게 3+3 정렬 🎯
+===================================== */
+
+/* ⚡ 오직 화면에 .beat-box가 '정확히 6개' 존재할 때만 최대 폭을 제한하여 3개씩 끊기 */
+.measure-row:has(> .beat-box:nth-child(6)):not(:has(> .beat-box:nth-child(7))) {
+    max-width: 760px; 
+    margin: 0 auto;  /* 중앙 정렬 */
+}
+
+/* ⚡ 점(dot)들이 많아져서 안 보였던 버그 해결 */
+.beat-box {
+    /* 기존 padding: 10px 14px를 살짝 슬림하게 줄여 내부 숨통 트기 (가장 안전) */
+    padding: 10px 8px !important; 
 }
 
 /* =====================================
@@ -501,8 +536,8 @@ button {
     /* 🎯 가로 1.5배(120px -> 180px), 세로 1.25배(80px -> 100px) 확대 */
     min-width: 180px;
     min-height: 100px;
-    width: 180px;   
-    height: 100px;
+    width: 240px;   
+    height: 140px;
     
     border: 2px solid var(--border);
     border-radius: 14px;
@@ -531,9 +566,7 @@ button {
 
 /* 🎯 [버그 수정] 중괄호 겹침 오타 완전히 정리 완료 */
 .beat-box[data-sub="6"] {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    display: flex;
     gap: 6px 0;
     justify-items: center;
     align-items: center;
@@ -541,9 +574,7 @@ button {
 }
 
 .beat-box[data-sub="7"] {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr); 
-    grid-template-rows: repeat(2, 1fr);
+    display: flex;
     gap: 8px 0;
     padding: 12px 6px;
 }
@@ -556,9 +587,7 @@ button {
 .beat-box[data-sub="7"] .dot:nth-child(7) { grid-column: span 4; grid-row: 2; justify-self: center; }
 
 .beat-box[data-sub="8"] {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    display: flext;
     gap: 6px 0;
     justify-items: center;
     align-items: center;
@@ -581,14 +610,14 @@ button {
     flex-shrink: 0; 
 }
 
-.beat-box[data-sub="1"] .dot,
-.beat-box[data-sub="2"] .dot,
-.beat-box[data-sub="3"] .dot { width: 24px; height: 24px; } 
-.beat-box[data-sub="4"] .dot { width: 20px; height: 20px; } 
-.beat-box[data-sub="5"] .dot { width: 18px; height: 18px; } 
-.beat-box[data-sub="6"] .dot { width: 20px; height: 20px; } 
-.beat-box[data-sub="7"] .dot { width: 18px; height: 18px; } 
-.beat-box[data-sub="8"] .dot { width: 16px; height: 16px; } 
+.beat-box[data-sub="1"] .dot { width: 40px; height: 40px; } 
+.beat-box[data-sub="2"] .dot { width: 40px; height: 40px; } 
+.beat-box[data-sub="3"] .dot { width: 40px; height: 40px; } 
+.beat-box[data-sub="4"] .dot { width: 35px; height: 35px; } 
+.beat-box[data-sub="5"] .dot { width: 30px; height: 30px; } 
+.beat-box[data-sub="6"] .dot { width: 30px; height: 30px; } 
+.beat-box[data-sub="7"] .dot { width: 27px; height: 27px; } 
+.beat-box[data-sub="8"] .dot { width: 25px; height: 25px; } 
 
 .dot.done { background: var(--gray); }
 .dot.active { background: var(--red); transform: none; }
