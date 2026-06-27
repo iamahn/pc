@@ -10,15 +10,6 @@ masterGain.connect(audioCtx.destination);
 // COUNTING VOICE
 // =====================================
 const voiceUrls = {
-	1: 'https://iamahn.github.io/beat/counting_voice/(female)01.wav', 
-	2: 'https://iamahn.github.io/beat/counting_voice/(female)02.wav',
-	3: 'https://iamahn.github.io/beat/counting_voice/(female)03.wav',
-	4: 'https://iamahn.github.io/beat/counting_voice/(female)04.wav',
-	5: 'https://iamahn.github.io/beat/counting_voice/(female)05.wav',
-	6: 'https://iamahn.github.io/beat/counting_voice/(female)06.wav',
-	7: 'https://iamahn.github.io/beat/counting_voice/(female)07.wav',
-	8: 'https://iamahn.github.io/beat/counting_voice/(female)08.wav',
-	9: 'https://iamahn.github.io/beat/counting_voice/(female)09.wav'
 };
 let voiceBuffers = {};
 let currentVoiceSource = null;
@@ -154,7 +145,8 @@ function updateSubdivisionOptions() {
 }
 
 function getBeatsCount() {
-    return parseInt(beatsInput.value.split('/')[0]) || 4;
+    if (!beatsInput || !beatsInput.value) return 4;
+	return parseInt(beatsInput.value.split('/')[0]) || 4;
 }
 
 // =====================================
@@ -285,11 +277,15 @@ function scheduleNote(step, time) {
 
     if (soundTypeInput.value === "human") {
         if (!isSubdivision) {
-            const voiceIndex = currentBeatNumber <= 9 ? currentBeatNumber : ((currentBeatNumber - 1) % 9) + 1;
-            playVoice(voiceIndex, time);
-        } else {
-            playClickAtTime(false, true, true, time);
-        }
+			let voiceIndex = 1;
+			if (getBeatsCount() > 1) {
+				voiceIndex = currentBeatNumber <= 9 ? currentBeatNumber : ((currentBeatNumber - 1) % 9) + 1;
+			}
+			playVoice(voiceIndex, time);
+		} else {
+			playClickAtTime(false, true, true, time);
+		}	
+        
     } else {
         playClickAtTime(accent, isSubdivision, false, time);
     }
